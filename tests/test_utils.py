@@ -155,6 +155,18 @@ class TestTokenUtilities:
             assert isinstance(count, int)
             assert count > 0
 
+    def test_token_count_fallback_on_runtime_error(self):
+        """Test fallback when tiktoken encounters runtime issues (e.g., no network)."""
+        from unittest.mock import patch
+        from requests.exceptions import RequestException
+
+        with patch("tiktoken.get_encoding", side_effect=RequestException("network error")):
+            text = "one two three four"
+            count = token_count(text)
+
+            assert isinstance(count, int)
+            assert count > 0
+
 
 # ============================================================================
 # TEST SUITE 3: Version Utilities
